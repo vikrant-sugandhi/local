@@ -1,0 +1,301 @@
+git config --global user.name "Vikrant Sugandhi"
+git config --global user.email vikrant.sugandhi@gmail.com
+git config --global core.editor "vim"
+git config --global core.editor "code --wait"
+#git config --global core.autocrlf true
+git config --global core.autocrlf input
+git config --global diff.tool vscode
+git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"
+git config --global -e
+
+
+how to handle EOL:
+
+windows : CR LF (true)
+Linux or Mac : LR (input)
+
+getting help:
+git config --help
+git config -h
+
+
+
+
+
+[user]
+ name = Vikrant Sugandhi
+ email = vikrant.sugandhi
+[core]
+ autocrlf = input
+ editor = code --wait
+[filter "lfs"]
+ clean = git-lfs clean -- %f
+ smudge = git-lfs smudge -- %f
+ process = git-lfs filter-process
+ required = true
+ [diff]
+  tool = vscode
+  [difftool "vscode"]
+   cmd = "code --wait --diff $LOCAL $REMOTE"
+===============================================
+
+mkdir Moon
+cd Moon
+git init
+ls -a
+rm -rf .git
+git init
+
+#create files:
+echo hello > file1.txt
+echo hello > file2.txt
+#check git status:
+git status
+
+#add files/dir to staging area:
+git add file1.txt file2.txt
+git add *.txt
+#adds entire dir to staging area
+git add . 
+git status
+echo World >> file1.txtx
+git status
+
+git add file1.txt
+git status
+
+
+how to commit:
+
+git commit -m "Initial commit."
+# if discription is longer
+git commit and  enter
+now edittor opens and add a short description ideally less than 80 Char and close the editor window
+
+git status
+
+
+commiting best practices:
+
+
+skipping th staging area:
+Do if u know code is not required to be reviwed.
+
+
+echo test >> file1.txt
+
+git commit -a -m "Fix the bug that prevented user from signing up."
+or
+git commit -am "Fix the bug that prevented user from signing up."
+
+removing files from project: 1. remove from working dir, 2. then from staging area, 3. commit changes
+#remove from working repo
+rm file2.txt
+
+git status
+
+git ls-files
+#remove from staging area:
+git add file2.txt
+
+git ls-files
+git status
+
+#remove from git repo
+git commit -m "Remove unused code."
+
+#To remove file at-once from both working repo and staging area: 1. remove from working dir and from staging area, 2. commit changes
+git rm file2.txt 
+or 
+git rm *.txt
+git ls-files
+git status
+#remove from git repo
+git commit -m "Remove unused code."
+ 
+
+#Renaming or moving files: 1. rename file in working dir 2. add and delete i.e stage both changes(new file and delete old)
+ls
+mv file1.txt main.c
+
+git status
+git add file1.txt
+git add main.c
+git status
+
+# To rename and stage in single command:
+git mv main.c file1.c
+git status
+git commit -m "Refactor code."
+
+
+#Ignoring files:
+mkdir logs
+echo hello > logs/dev.log
+git status
+
+create .gitignore file in the root of your project and add all files that are to be ignored as below or using vi editor manually.
+
+echo logs/ > .gitignore
+echo main.log > .gitignore
+echo *.log > .gitignore
+or
+vi .gitignore     and add all the files that are to be ignored here.
+e.g
+ logs/
+ main.log
+ *.log
+ 
+ git status
+ 
+ # add git ignote to staging area
+ git add .gitignore
+ git commit -m "Add gitignore"
+ 
+ 
+ #if wrongly added file e.g some bin file that is to be ignored in the git staging area:
+ 1. add file name to .gitignore 
+ mkdir bin
+ echo hello > bin/app.bin
+ git status
+ 
+ accidental commit as below:
+ git add .
+ git commit -m "Add bin."
+ 
+ # how to handle this:
+ 1. add bin folder name to .gitignore 
+ echo bin/ > .gitignore
+   
+git status
+
+git add .
+git commit -m "Include bin/ in gitignore."
+
+echo helloworld > bin/app.bin
+
+2. remove bin folder from only the staging area/Index (not from working dir)
+git ls-files
+
+git rm -h
+git rm --cached bin/
+
+git rm --cached -r bin/
+
+git ls-files
+git status
+
+3. commit the changes
+git commit -m "Remove bin dir that is accedentally committed."
+echo test > bin/app.bin
+git status
+now the git wont track bin folder
+
+# getting short status of working dir and staging area:
+git status -s
+
+echo sky >> file1.c
+echo sky > file2.c
+git status -s
+
+XY file1.c
+XY file2.c
+
+here X field tells staging area
+     Y fields tells working area
+git add file1.c
+
+git status -s
+
+echo ocean >> file1.c
+git status -s
+git add file1.c
+git status -s
+
+
+git add file2.c
+git status -s
+
+git commit -m "Add modified file1 and new file2."
+
+# Viewing the staged and unstaged changes:
+note before commiting any code from staging area it has to be reviewed.
+Now to locate the exact lines of code changed..?
+> Use the diff command..!!!! to compare staging area files with git committed files
+
+echo pacific ocean >> file1.c
+git add file1.c
+echo earth > file3.c
+git add file3.c
+git status -s
+
+git diff --staged
+
+# to compare working dir to staging area files i.e unstaged changes:
+git diff
+git status -s
+
+code file1.c
+and change first line and save
+git status -s
+git diff
+
+visual diff tools:
+kdiff3
+p4merge
+vscode
+winmerge(windows only)
+
+# perform diff tool related configuration as shown begining:
+git config --global diff.tool vscode
+git config --global difftool.vscode.cmd "code --wait --diff $LOCAL $REMOTE"
+git config --global -e
+
+#to see unstaged chages
+git difftool
+#to see staged changes
+git difftool --staged
+
+#viewing the history:
+git log
+
+git log --oneline
+git log --oneline --reverse
+
+#viewing a commit:
+to see diff 
+git show <unique_identifier>
+git show HEAD~1
+git show HEAD~N  here N is number of step 1,2,3,4,......
+
+# to see exact what is commited and not diff:
+
+git show HEAD~1:.gitignore
+git show HEAD~1:/bin/app.bin
+git ls-tree HEAD~1
+
+#untaging files:
+
+Git Commands - Beginners hands on git status git clone git commit git push git log git add and more:
+
+git clone <git url>
+
+git log
+git status
+git log --patch -1
+git log -p -1
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
